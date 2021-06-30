@@ -73,6 +73,24 @@ public class Word {
         return "";
     }
 
+    public static String getStringForFile() {
+        if (!words.isEmpty()){
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i=words.size()-1; i>=0; i--){
+                stringBuilder.append(words.get(i).getDictStr());
+                stringBuilder.append("\n");
+            }
+            return stringBuilder.toString();
+        }
+        return "";
+    }
+
+    public static void addWordToWords(Word word) {
+        if (!Word.words.contains(word)) {
+            Word.words.add(word);
+        }
+    }
+
     private String getDictStr(){
         return this.enWord+" "+this.transcription+" "+this.translate;
     }
