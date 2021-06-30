@@ -1,6 +1,9 @@
 package com.home.mydict.ssl;
 
+import java.io.InputStream;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;

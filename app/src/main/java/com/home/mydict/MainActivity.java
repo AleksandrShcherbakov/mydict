@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.home.mydict.model.Word;
+import com.home.mydict.service.FileService;
+import com.home.mydict.service.FileServiceImpl;
 import com.home.mydict.service.PromtTranslateRequest;
 import com.home.mydict.service.PromtTranslateService;
 import com.home.mydict.service.TranslateRequest;
@@ -41,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     TranslateService translateService = new PromtTranslateService();
     TranslateRequest translateRequest = new PromtTranslateRequest();
-    String fileName="dictionary_file";
+    FileService fileService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
         editText=findViewById(R.id.editText);
         button =findViewById(R.id.button);
 
+        fileService = new FileServiceImpl(this);
+
         try {
-            readFile();
+            fileService.readFile();
             textView.setText(Word.getStringForTextView());
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     public void okClick(View view) throws IOException {
 
         final String enWord = editText.getText().toString();
+        final boolean[] isWordFound = {false};
+        final boolean[] isWordExists = {false};
 
         Thread thread = new Thread() {
             @Override
@@ -71,9 +79,14 @@ public class MainActivity extends AppCompatActivity {
                     Document document = translateRequest.getHtmlPage(enWord);
                     String transcription = translateService.getTranscription(document);
                     String translate = translateService.getTranslate(document);
-                    Word word = new Word(enWord, transcription, translate);
-                    if (!Word.words.contains(word)) {
-                        Word.words.add(word);
+                    if (!transcription.isEmpty() && !translate.isEmpty()) {
+                        isWordFound[0] =true;
+                        Word word = new Word(enWord, transcription, translate);
+                        if (!Word.words.contains(word)) {
+                            Word.words.add(word);
+                        } else {
+                            isWordExists[0]=true;
+                        }
                     }
 
                 } catch (IOException e) {
@@ -88,57 +101,24 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        if (!isWordFound[0]) {
+            showToast("перевод для слова "+enWord+" не найден");
+        }
+        if (isWordExists[0]) {
+            showToast("слово "+enWord+" уже было в поиске");
+        }
+
         System.out.println(Word.words);
 
         textView.setText(Word.getStringForTextView());
 
-        writeFile();
+        fileService.writeFile();
     }
 
-    private void writeFile() throws IOException {
-        File dir = this.getExternalFilesDir(null);
-        String filePath = dir.getPath()+"/"+fileName;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            boolean fileExists = Files.exists(Paths.get(filePath));
-            if (!fileExists){
-                try {
-                    Files.createFile(Paths.get(filePath));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                FileWriter fileWriter = new FileWriter(new File(filePath));
-                fileWriter.write(Word.getStringForTextView());
-                fileWriter.close();
-            }
-        }
-    }
-
-    private void readFile() throws IOException {
-        File dir = this.getExternalFilesDir(null);
-        String filePath = dir.getPath()+"/"+fileName;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            boolean fileExists = Files.exists(Paths.get(filePath));
-            if (!fileExists){
-                try {
-                    Files.createFile(Paths.get(filePath));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                FileReader fileReader = new FileReader(filePath);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                while (bufferedReader.ready()) {
-                    String string = bufferedReader.readLine();
-                    String[] strings = string.split(" ");
-                    Word word = new Word(strings[0], strings[1], strings[2]);
-                    if (!Word.words.contains(word)) {
-                        Word.words.add(word);
-                    }
-                }
-                bufferedReader.close();
-            }
-        }
+    private void showToast(String message){
+        Toast toast = Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP,0,0);
+        toast.show();
     }
 
 }
