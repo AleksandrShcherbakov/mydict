@@ -2,8 +2,6 @@ package com.home.mydict;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -19,31 +17,17 @@ import com.home.mydict.service.PromtTranslateRequest;
 import com.home.mydict.service.PromtTranslateService;
 import com.home.mydict.service.TranslateRequest;
 import com.home.mydict.service.TranslateService;
-import com.home.mydict.ssl.SSLSocket;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     TextView textView;
     EditText editText;
     Button button;
-    TranslateService translateService = new PromtTranslateService();
-    TranslateRequest translateRequest = new PromtTranslateRequest();
+    TranslateService translateService;
+    TranslateRequest translateRequest;
     FileService fileService;
 
 
@@ -57,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         button =findViewById(R.id.button);
 
         fileService = new FileServiceImpl(this);
+        translateService=new PromtTranslateService();
+        translateRequest=new PromtTranslateRequest(this);
 
         try {
             fileService.readFile();
