@@ -69,12 +69,10 @@ public class SSLSocketPromt implements SSLSocket {
         TrustManagerFactory trustManagerFactory = null;
         try {
             trustManagerFactory = TrustManagerFactory.getInstance("X509");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        try {
             trustManagerFactory.init(keyStore);
             return trustManagerFactory;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
