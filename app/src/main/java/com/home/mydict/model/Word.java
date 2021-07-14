@@ -76,7 +76,7 @@ public class Word {
     public static String getStringForFile() {
         if (!words.isEmpty()){
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i=words.size()-1; i>=0; i--){
+            for (int i=0; i<words.size(); i++){
                 stringBuilder.append(words.get(i).getDictStr());
                 stringBuilder.append("\n");
             }
