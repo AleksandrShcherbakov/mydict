@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         textView=findViewById(R.id.textView);
         editText=findViewById(R.id.editText);
         button =findViewById(R.id.button);
-        hideEngSwitch = findViewById(R.id.switch1);
-        hideRusSwitch = findViewById(R.id.switch2);
+        hideEngSwitch = findViewById(R.id.switch2);
+        hideRusSwitch = findViewById(R.id.switch1);
 
         fileService = new FileServiceImpl(this);
         translateService=new PromtTranslateService();
@@ -108,21 +108,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClickHideEng(View view){
-        if (!hideEngSwitch.isActivated()){
-            hideEngSwitch.setActivated(true);
+        if (hideEngSwitch.isChecked()){
             textView.setText(Word.getStringForTextView(Word.TextViewType.RUS));
+            if (hideRusSwitch.isChecked()){
+                hideRusSwitch.setChecked(false);
+            }
         } else {
-            hideEngSwitch.setActivated(false);
             textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
         }
     }
 
     public void onClickHideRus(View view){
-        if (!hideRusSwitch.isActivated()){
-            hideRusSwitch.setActivated(true);
+        if (hideRusSwitch.isChecked()){
             textView.setText(Word.getStringForTextView(Word.TextViewType.ENG));
+            if (hideEngSwitch.isChecked()){
+                hideEngSwitch.setChecked(false);
+            }
         } else {
-            hideRusSwitch.setActivated(false);
             textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
         }
     }
