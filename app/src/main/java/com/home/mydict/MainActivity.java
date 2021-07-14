@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     EditText editText;
     Button button;
+    Switch hideRusSwitch;
+    Switch hideEngSwitch;
     TranslateService translateService;
     TranslateRequest translateRequest;
     FileService fileService;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         textView=findViewById(R.id.textView);
         editText=findViewById(R.id.editText);
         button =findViewById(R.id.button);
+        hideEngSwitch = findViewById(R.id.switch1);
+        hideRusSwitch = findViewById(R.id.switch2);
 
         fileService = new FileServiceImpl(this);
         translateService=new PromtTranslateService();
@@ -46,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             fileService.readFile();
-            textView.setText(Word.getStringForTextView());
+            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void okClick(View view) throws IOException {
+    public void okClickTranslate(View view) throws IOException {
 
         final String enWord = editText.getText().toString();
         final boolean[] isWordFound = {false};
@@ -96,9 +101,30 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println(Word.words);
 
-        textView.setText(Word.getStringForTextView());
+        textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
 
         fileService.writeFile();
+    }
+
+
+    public void onClickHideEng(View view){
+        if (!hideEngSwitch.isActivated()){
+            hideEngSwitch.setActivated(true);
+            textView.setText(Word.getStringForTextView(Word.TextViewType.RUS));
+        } else {
+            hideEngSwitch.setActivated(false);
+            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+        }
+    }
+
+    public void onClickHideRus(View view){
+        if (!hideRusSwitch.isActivated()){
+            hideRusSwitch.setActivated(true);
+            textView.setText(Word.getStringForTextView(Word.TextViewType.ENG));
+        } else {
+            hideRusSwitch.setActivated(false);
+            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+        }
     }
 
     private void showToast(String message){

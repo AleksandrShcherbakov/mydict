@@ -2,7 +2,7 @@ package com.home.mydict.model;
 
 import android.annotation.SuppressLint;
 
-import org.jsoup.nodes.Document;
+import com.home.mydict.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +56,22 @@ public class Word {
                 '}';
     }
 
-    public static String getStringForTextView(){
+    public static String getStringForTextView(TextViewType textViewType){
         if (!words.isEmpty()){
             StringBuilder stringBuilder = new StringBuilder();
             int localCount=0;
             for (int i=words.size()-1; i>=0; i--){
-                stringBuilder.append(words.get(i).getDictStr());
+                switch (textViewType){
+                    case DICT:
+                        stringBuilder.append(words.get(i).getDictStr());
+                        break;
+                    case ENG:
+                        stringBuilder.append(words.get(i).getEngStr());
+                        break;
+                    case RUS:
+                        stringBuilder.append(words.get(i).getRusStr());
+                        break;
+                }
                 stringBuilder.append("\n");
                 localCount++;
                 if (localCount==count){
@@ -93,6 +103,22 @@ public class Word {
 
     private String getDictStr(){
         return this.enWord+" "+this.transcription+" "+this.translate;
+    }
+
+    private String getEngStr(){
+        int lengthOfRus = this.translate.length();
+        return this.enWord+" "+this.transcription+" "+ StringUtils.generateEmptyString(lengthOfRus);
+    }
+
+    private String getRusStr(){
+        int lengthOfEng = (this.enWord+" "+this.transcription).length();
+        return StringUtils.generateEmptyString(lengthOfEng)+" "+this.translate;
+    }
+
+    public enum TextViewType {
+        DICT,
+        RUS,
+        ENG
     }
 
     @SuppressLint("NewApi")

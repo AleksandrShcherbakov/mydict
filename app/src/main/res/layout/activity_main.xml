@@ -20,13 +20,39 @@
             android:inputType="textPersonName"
             android:textCursorDrawable="@android:drawable/status_bar_item_background" />
 
-        <Button
-            android:id="@+id/button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="okClick"
-            android:text="translate"
-            android:textSize="18sp" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="252dp"
+                android:layout_height="match_parent"
+                android:onClick="okClickTranslate"
+                android:text="translate"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickHideEng"
+                    android:text=" Hide English" />
+
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickHideRus"
+                    android:text=" Hide Russian" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView"
