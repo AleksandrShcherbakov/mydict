@@ -1,6 +1,11 @@
 package com.home.mydict.model;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 
 import com.home.mydict.util.StringUtils;
 
@@ -56,6 +61,7 @@ public class Word {
                 '}';
     }
 
+    @Deprecated
     public static String getStringForTextView(TextViewType textViewType){
         if (!words.isEmpty()){
             StringBuilder stringBuilder = new StringBuilder();
@@ -83,6 +89,33 @@ public class Word {
         return "";
     }
 
+    public static SpannableString getSpannableStringForTextView(TextViewType textViewType){
+        if (!words.isEmpty()){
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+            int localCount=0;
+            for (int i=words.size()-1; i>=0; i--){
+                switch (textViewType){
+                    case DICT:
+                        stringBuilder.append(words.get(i).getDictStr());
+                        break;
+                    case ENG:
+                        stringBuilder.append(words.get(i).getSpanRus());
+                        break;
+                    case RUS:
+                        stringBuilder.append(words.get(i).getSpanEng());
+                        break;
+                }
+                stringBuilder.append("\n");
+                localCount++;
+                if (localCount==count){
+                    break;
+                }
+            }
+            return SpannableString.valueOf(stringBuilder);
+        }
+        return SpannableString.valueOf("");
+    }
+
     public static String getStringForFile() {
         if (!words.isEmpty()){
             StringBuilder stringBuilder = new StringBuilder();
@@ -101,18 +134,39 @@ public class Word {
         }
     }
 
+    private SpannableString getSpanEng(){
+        SpannableString spannableString = new SpannableString(this.getDictStr());
+        spannableString.setSpan(new ForegroundColorSpan(000000),0,this.getEngLength(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
+
+    private SpannableString getSpanRus(){
+        int dictStrLength = this.getDictStr().length();
+        int start = dictStrLength - this.getRusLength();
+        SpannableString spannableString = new SpannableString(this.getDictStr());
+        spannableString.setSpan(new ForegroundColorSpan(000000),start,dictStrLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
+
+
     private String getDictStr(){
         return this.enWord+" "+this.transcription+" "+this.translate;
     }
 
     private String getEngStr(){
-        int lengthOfRus = this.translate.length();
-        return this.enWord+" "+this.transcription+" "+ StringUtils.generateEmptyString(lengthOfRus);
+        return this.enWord+" "+this.transcription+" "+ StringUtils.generateEmptyString(this.getRusLength());
+    }
+
+    public int getRusLength(){
+        return this.translate.length();
+    }
+
+    public int getEngLength(){
+        return (this.enWord+" "+this.transcription).length();
     }
 
     private String getRusStr(){
-        int lengthOfEng = (this.enWord+" "+this.transcription).length();
-        return StringUtils.generateEmptyString(lengthOfEng)+" "+this.translate;
+        return StringUtils.generateEmptyString(this.getEngLength())+" "+this.translate;
     }
 
     public enum TextViewType {

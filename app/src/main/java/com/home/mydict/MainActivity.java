@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             fileService.readFile();
-            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+            textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.DICT));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println(Word.words);
 
-        textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+        textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.DICT));
 
         fileService.writeFile();
     }
@@ -109,23 +109,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickHideEng(View view){
         if (hideEngSwitch.isChecked()){
-            textView.setText(Word.getStringForTextView(Word.TextViewType.RUS));
+            textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.RUS));
             if (hideRusSwitch.isChecked()){
                 hideRusSwitch.setChecked(false);
             }
         } else {
-            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+            textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.DICT));
         }
     }
 
     public void onClickHideRus(View view){
         if (hideRusSwitch.isChecked()){
-            textView.setText(Word.getStringForTextView(Word.TextViewType.ENG));
+            textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.ENG));
             if (hideEngSwitch.isChecked()){
                 hideEngSwitch.setChecked(false);
             }
         } else {
-            textView.setText(Word.getStringForTextView(Word.TextViewType.DICT));
+            textView.setText(Word.getSpannableStringForTextView(Word.TextViewType.DICT));
         }
     }
 
